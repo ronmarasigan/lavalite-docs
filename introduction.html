@@ -202,10 +202,6 @@ C:/xampp/htdocs/LavaLite
 # Navigate into the project folder
 cd LavaLite
 </code></pre>
-
-<div class="note">
-Make sure the folder structure remains intact. The 'app', 'system', and 'public' folders must not be moved or renamed.
-</div>
 </section>
 
 <section id="run">
@@ -218,19 +214,14 @@ Make sure the folder structure remains intact. The 'app', 'system', and 'public'
 cd C:/xampp/htdocs/LavaLite
 
 # Start PHP development server
-php -S localhost:8000 -t public
+php -S localhost:3000
 </code></pre>
 
 <p>Open your browser and navigate to:</p>
 
 <pre><code class="language-html">
-http://localhost:8000
+http://localhost:3000
 </code></pre>
-
-<div class="tip">
-- The <code>-t public</code> option sets the document root to the <code>public</code> folder.  
-- This is important to prevent access to sensitive framework files outside the public folder.
-</div>
 
 <h3>Optional: Using VSCode Live Server Extension</h3>
 <p>
