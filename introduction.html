@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LavaLite Framework</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Highlight.js -->
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+<style>
+:root {
+    --orange: #f97316;
+    --orange-dark: #ea580c;
+    --sidebar-bg: #111827;
+    --border: #e5e7eb;
+    --text: #1f2937;
+    --muted: #6b7280;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    display:flex;
+    background:#fff;
+    color:var(--text);
+}
+
+/* Sidebar */
+.sidebar {
+    width:280px;
+    background:var(--sidebar-bg);
+    color:#fff;
+    padding:30px 20px;
+    position:fixed;
+    height:100%;
+    overflow-y:auto;
+}
+
+.sidebar h2 {
+    color:var(--orange);
+    margin-bottom:25px;
+}
+
+.sidebar a {
+    display:block;
+    color:#d1d5db;
+    text-decoration:none;
+    padding:6px 0;
+    font-size:14px;
+    transition:0.2s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    color:var(--orange);
+    padding-left:6px;
+}
+
+/* Content */
+.content {
+    margin-left:280px;
+    padding:60px;
+    max-width:1100px;
+}
+
+h1 { font-size:32px; margin-bottom:10px; }
+.lead { color:var(--muted); margin-bottom:40px; }
+
+h2 {
+    margin-top:60px;
+    margin-bottom:15px;
+    border-bottom:2px solid var(--border);
+    padding-bottom:8px;
+    color:var(--orange-dark);
+}
+
+h3 { margin-top:30px; margin-bottom:10px; }
+
+pre { border-radius:8px; margin:20px 0; }
+
+.note {
+    background:#fff7ed;
+    border-left:4px solid var(--orange);
+    padding:15px;
+    margin:15px 0;
+}
+
+.tip {
+    background:#ecfdf5;
+    border-left:4px solid #10b981;
+    padding:15px;
+    margin:15px 0;
+}
+
+@media (max-width:900px){
+    .sidebar{ position:relative; width:100%; height:auto; }
+    .content{ margin-left:0; padding:30px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>LavaLite</h2>
+    <a href="#intro">Introduction</a>
+    <a href="#requirements">Requirements</a>
+    <a href="#install">Installation</a>
+    <a href="#clone">Install via Git Clone</a>
+    <a href="#manual">Manual Download</a>
+    <a href="#run">Run in VSCode Terminal</a>
+</div>
+
+<div class="content">
+
+<h1>Introduction to LavaLite</h1>
+<p class="lead">
+LavaLite is a lightweight PHP MVC framework designed for rapid development, simplicity, and modern coding practices.
+It is inspired by LavaLust, but focuses on **speed, minimal setup, and flexibility**.
+</p>
+
+<section id="intro">
+<h2>What is LavaLite?</h2>
+
+<p>
+LavaLite provides:
+</p>
+<ul>
+<li>Fluent database and query builder</li>
+<li>Built-in security features like CSRF protection and session management</li>
+<li>Simple routing with optional parameters</li>
+<li>Easy integration of helper functions and modular components</li>
+<li>Lightweight footprint for faster page load</li>
+</ul>
+
+<div class="note">
+LavaLite is perfect for small to medium PHP projects where you want speed without compromising structure.
+</div>
+</section>
+
+<section id="requirements">
+<h2>System Requirements</h2>
+
+<ul>
+<li>PHP 8.1 or higher</li>
+<li>Composer (optional, if using dependencies)</li>
+<li>Web server (Apache, Nginx) or PHP built-in development server</li>
+<li>VSCode (recommended) or any code editor</li>
+<li>Git (optional, for clone method)</li>
+</ul>
+
+<div class="tip">
+You can use the PHP development server without installing Apache or Nginx.
+</div>
+</section>
+
+<section id="install">
+<h2>Installation Overview</h2>
+
+<p>LavaLite can be installed in two ways:</p>
+<ul>
+<li>Using Git clone (recommended for development)</li>
+<li>Manual download of the ZIP package</li>
+</ul>
+</section>
+
+<section id="clone">
+<h2>Install via Git Clone</h2>
+
+<p>Steps:</p>
+
+<pre><code class="language-bash">
+# Open VSCode terminal and navigate to your web folder
+cd C:/xampp/htdocs    # Example for XAMPP on Windows
+
+# Clone the repository
+git clone https://github.com/ronmarasigan/LavaLite.git
+
+# Navigate into project
+cd LavaLite
+</code></pre>
+
+<p>After cloning, the project folder will contain the entire framework ready to run.</p>
+</section>
+
+<section id="manual">
+<h2>Manual Download</h2>
+
+<p>Steps:</p>
+
+<pre><code class="language-bash">
+# Download the ZIP package from GitHub
+https://github.com/YourUsername/LavaLite/archive/refs/heads/main.zip
+
+# Extract the ZIP into your web folder
+C:/xampp/htdocs/LavaLite
+
+# Navigate into the project folder
+cd LavaLite
+</code></pre>
+
+<div class="note">
+Make sure the folder structure remains intact. The 'app', 'system', and 'public' folders must not be moved or renamed.
+</div>
+</section>
+
+<section id="run">
+<h2>Running LavaLite Using VSCode Terminal</h2>
+
+<p>You can run LavaLite using the PHP built-in development server:</p>
+
+<pre><code class="language-bash">
+# Make sure you are in the project root (where index.php is located)
+cd C:/xampp/htdocs/LavaLite
+
+# Start PHP development server
+php -S localhost:8000 -t public
+</code></pre>
+
+<p>Open your browser and navigate to:</p>
+
+<pre><code class="language-html">
+http://localhost:8000
+</code></pre>
+
+<div class="tip">
+- The <code>-t public</code> option sets the document root to the <code>public</code> folder.  
+- This is important to prevent access to sensitive framework files outside the public folder.
+</div>
+
+<h3>Optional: Using VSCode Live Server Extension</h3>
+<p>
+You can also use the <strong>Live Server</strong> extension for VSCode if you prefer an auto-refresh development experience, but PHP built-in server is recommended for PHP apps.
+</p>
+
+</section>
+
+</div>
+</body>
+</html>
