@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Router Class</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Highlight.js -->
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+<style>
+:root {
+    --orange: #f97316;
+    --orange-dark: #ea580c;
+    --sidebar-bg: #111827;
+    --border: #e5e7eb;
+    --text: #1f2937;
+    --muted: #6b7280;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    display:flex;
+    background:#fff;
+    color:var(--text);
+    line-height:1.7;
+}
+
+/* Sidebar */
+.sidebar {
+    width:280px;
+    background:var(--sidebar-bg);
+    color:#fff;
+    padding:30px 20px;
+    position:fixed;
+    height:100%;
+    overflow-y:auto;
+}
+
+.sidebar h2 {
+    color:var(--orange);
+    margin-bottom:25px;
+}
+
+.sidebar a {
+    display:block;
+    color:#d1d5db;
+    text-decoration:none;
+    padding:6px 0;
+    font-size:14px;
+    transition:0.2s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    color:var(--orange);
+    padding-left:6px;
+}
+
+/* Content */
+.content {
+    margin-left:280px;
+    padding:60px;
+    max-width:1000px;
+}
+
+h1 { font-size:32px; margin-bottom:10px; }
+.lead { color:var(--muted); margin-bottom:40px; }
+
+h2 {
+    margin-top:60px;
+    margin-bottom:15px;
+    border-bottom:2px solid var(--border);
+    padding-bottom:8px;
+    color:var(--orange-dark);
+}
+
+h3 { margin-top:30px; margin-bottom:10px; }
+
+pre { border-radius:8px; margin:20px 0; }
+
+.note {
+    background:#fff7ed;
+    border-left:4px solid var(--orange);
+    padding:15px;
+    margin:15px 0;
+}
+
+.tip {
+    background:#ecfdf5;
+    border-left:4px solid #10b981;
+    padding:15px;
+    margin:15px 0;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+table th, table td {
+    border:1px solid var(--border);
+    padding:10px;
+}
+
+@media (max-width:900px){
+    .sidebar{ position:relative; width:100%; height:auto; }
+    .content{ margin-left:0; padding:30px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Router Class</h2>
+    <a href="#intro">Introduction</a>
+    <a href="#get">GET Routes</a>
+    <a href="#post">POST Routes</a>
+    <a href="#put">PUT Routes</a>
+    <a href="#patch">PATCH Routes</a>
+    <a href="#delete">DELETE Routes</a>
+    <a href="#any">ANY Routes</a>
+    <a href="#middleware">Middleware</a>
+    <a href="#groups">Route Groups</a>
+    <a href="#csrf">CSRF Protection</a>
+    <a href="#errors">Error Handling</a>
+    <h3>Links</h3>
+    <a href="database.html">Database Class &raquo;</a>
+    <a href="helper.html">Helpers Functions &raquo;</a>
+</div>
+
+<div class="content">
+
+<h1>Router Class</h1>
+<p class="lead">
+The LavaLite Router provides expressive, secure, and RESTful route handling 
+with middleware support and automatic CSRF protection.
+</p>
+
+<section id="intro">
+<h2>Introduction</h2>
+
+<p>
+Routing is the foundation of every web framework. It determines how incoming HTTP
+requests are matched to executable logic (handlers or controllers).
+</p>
+
+<p>LavaLite
+The LavaLite Router supports:
+</p>
+
+<ul>
+<li>All major HTTP verbs (GET, POST, PUT, PATCH, DELETE, ANY)</li>
+<li>Dynamic route parameters</li>
+<li>Route grouping with prefixes</li>
+<li>Global and route-level middleware</li>
+<li>Built-in CSRF validation</li>
+<li>Automatic error handling</li>
+</ul>
+
+<div class="note">
+The router follows REST principles, making it ideal for APIs and modern web applications.
+</div>
+
+</section>
+
+<!-- GET -->
+<section id="get">
+<h2>GET Routes</h2>
+
+<p>
+GET routes are used to retrieve data or display pages.
+They should never modify server state.
+</p>
+
+<pre><code class="language-php">$router->get('/', 'views/home');
+
+$router->get('users/{id}', function($id){
+    echo "User ID: " . $id;
+});
+
+$router->get('posts/{slug?}', 'posts/show');</code></pre>
+
+<h3>Route Parameters</h3>
+
+<p>
+Parameters inside curly braces are dynamically injected into your handler.
+</p>
+
+<ul>
+<li><strong>{id}</strong> → Required parameter</li>
+<li><strong>{slug?}</strong> → Optional parameter</li>
+</ul>
+
+<div class="tip">
+Use GET routes for:
+• Pages
+• Search queries
+• API data retrieval
+• Showing forms
+</div>
+
+</section>
+
+<!-- POST -->
+<section id="post">
+<h2>POST Routes</h2>
+
+<p>
+POST routes are used to create new resources or submit data.
+They modify server state.
+</p>
+
+<pre><code class="language-php">$router->post('register', function(){
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+
+    // Save user
+});</code></pre>
+
+<h3>Form Example with CSRF</h3>
+
+<pre><code class="language-html">&lt;form method="POST" action="/register"&gt;
+    &lt;?php $router->csrf_field(); ?&gt;
+    &lt;input type="text" name="name"&gt;
+    &lt;input type="email" name="email"&gt;
+    &lt;button type="submit"&gt;Register&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+<div class="note">
+POST automatically validates CSRF tokens.
+</div>
+
+</section>
+
+<!-- PUT -->
+<section id="put">
+<h2>PUT Routes</h2>
+
+<p>
+PUT is used to completely replace a resource.
+It is typically used in RESTful APIs.
+</p>
+
+<pre><code class="language-php">$router->put('users/{id}', function($id){
+    parse_str(file_get_contents("php://input"), $data);
+
+    // Replace entire user record
+});</code></pre>
+
+</section>
+
+<!-- PATCH -->
+<section id="patch">
+<h2>PATCH Routes</h2>
+
+<p>
+PATCH updates only specific fields of a resource.
+</p>
+
+<pre><code class="language-php">$router->patch('users/{id}', function($id){
+    parse_str(file_get_contents("php://input"), $data);
+
+    // Update selected fields only
+});</code></pre>
+
+</section>
+
+<!-- DELETE -->
+<section id="delete">
+<h2>DELETE Routes</h2>
+
+<p>
+DELETE removes a resource permanently.
+</p>
+
+<pre><code class="language-php">$router->delete('users/{id}', function($id){
+    // Delete user
+});</code></pre>
+
+</section>
+
+<!-- ANY -->
+<section id="any">
+<h2>ANY Routes</h2>
+
+<p>
+ANY matches all HTTP verbs.
+Useful for webhooks or debugging endpoints.
+</p>
+
+<pre><code class="language-php">$router->any('webhook', function(){
+    echo $_SERVER['REQUEST_METHOD'];
+});</code></pre>
+
+</section>
+
+<!-- Middleware -->
+<section id="middleware">
+<h2>Middleware</h2>
+
+<p>
+Middleware acts as a filtering layer before a route executes.
+</p>
+
+<h3>Route Middleware</h3>
+
+<pre><code class="language-php">$router->get('dashboard', 'dashboard/index')
+       ->middleware('auth');</code></pre>
+
+<h3>Middleware File</h3>
+
+<pre><code class="language-php">// middlewares/auth.php
+return function($method, $params){
+    if(!isset($_SESSION['user'])){
+        header('Location: /login');
+        return false;
+    }
+    return true;
+};</code></pre>
+
+<h3>Global Middleware</h3>
+
+<pre><code class="language-php">$router->add_global_middleware(function($method, $params){
+    error_log($method . " accessed");
+    return true;
+});</code></pre>
+
+<div class="note">
+Execution Order:
+Global → Group → Route Middleware
+</div>
+
+</section>
+
+<!-- Groups -->
+<section id="groups">
+<h2>Route Groups</h2>
+
+<p>
+Groups allow prefixing and sharing middleware across multiple routes.
+</p>
+
+<pre><code class="language-php">$router->group([
+    'prefix' => 'admin',
+    'middleware' => ['auth']
+], function($router){
+
+    $router->get('dashboard', 'admin/dashboard');
+    $router->post('create-user', 'admin/create');
+    $router->delete('delete-user/{id}', 'admin/delete');
+
+});</code></pre>
+
+</section>
+
+<!-- CSRF -->
+<section id="csrf">
+<h2>CSRF Protection</h2>
+
+<p>
+CSRF tokens protect your application from cross-site request forgery attacks.
+</p>
+
+<pre><code class="language-php">&lt;?php $router->csrf_field(); ?&gt;</code></pre>
+
+<div class="tip">
+CSRF automatically applies to:
+POST, PUT, PATCH, DELETE.
+</div>
+
+</section>
+
+<!-- Errors -->
+<section id="errors">
+<h2>Error Handling</h2>
+
+<table>
+<tr><th>Status</th><th>Description</th></tr>
+<tr><td>403</td><td>Forbidden (middleware or CSRF failed)</td></tr>
+<tr><td>404</td><td>Route not found</td></tr>
+<tr><td>500</td><td>Internal server error</td></tr>
+</table>
+
+<pre><code class="language-php">define('IS_DEV', true);</code></pre>
+
+<p>
+Enable development mode to display detailed error messages.
+</p>
+
+</section>
+
+</div>
+
+<script>
+const sections = document.querySelectorAll("section");
+const navLinks = document.querySelectorAll(".sidebar a");
+
+window.addEventListener("scroll", () => {
+    let current = "";
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if(pageYOffset >= sectionTop - 100){
+            current = section.getAttribute("id");
+        }
+    });
+
+    navLinks.forEach(a => {
+        a.classList.remove("active");
+        if(a.getAttribute("href") === "#" + current){
+            a.classList.add("active");
+        }
+    });
+});
+</script>
+
+</body>
+</html>

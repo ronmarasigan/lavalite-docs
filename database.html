@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Database Class</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Highlight.js -->
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+<style>
+:root {
+    --orange: #f97316;
+    --orange-dark: #ea580c;
+    --sidebar-bg: #111827;
+    --border: #e5e7eb;
+    --text: #1f2937;
+    --muted: #6b7280;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    display:flex;
+    background:#fff;
+    color:var(--text);
+}
+
+/* Sidebar */
+.sidebar {
+    width:280px;
+    background:var(--sidebar-bg);
+    color:#fff;
+    padding:30px 20px;
+    position:fixed;
+    height:100%;
+    overflow-y:auto;
+}
+
+.sidebar h2 {
+    color:var(--orange);
+    margin-bottom:25px;
+}
+
+.sidebar a {
+    display:block;
+    color:#d1d5db;
+    text-decoration:none;
+    padding:6px 0;
+    font-size:14px;
+    transition:0.2s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    color:var(--orange);
+    padding-left:6px;
+}
+
+/* Content */
+.content {
+    margin-left:280px;
+    padding:60px;
+    max-width:1100px;
+}
+
+h1 { font-size:32px; margin-bottom:10px; }
+.lead { color:var(--muted); margin-bottom:40px; }
+
+h2 {
+    margin-top:60px;
+    margin-bottom:15px;
+    border-bottom:2px solid var(--border);
+    padding-bottom:8px;
+    color:var(--orange-dark);
+}
+
+h3 { margin-top:30px; margin-bottom:10px; }
+
+pre { border-radius:8px; margin:20px 0; }
+
+.note {
+    background:#fff7ed;
+    border-left:4px solid var(--orange);
+    padding:15px;
+    margin:15px 0;
+}
+
+.tip {
+    background:#ecfdf5;
+    border-left:4px solid #10b981;
+    padding:15px;
+    margin:15px 0;
+}
+
+@media (max-width:900px){
+    .sidebar{ position:relative; width:100%; height:auto; }
+    .content{ margin-left:0; padding:30px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Database Class</h2>
+    <a href="#intro">Introduction</a>
+    <a href="#connection">Connection</a>
+    <a href="#select">Selecting Data</a>
+    <a href="#where">Where Clauses</a>
+    <a href="#insert">Insert</a>
+    <a href="#update">Update</a>
+    <a href="#delete">Delete</a>
+    <a href="#joins">Joins</a>
+    <a href="#group">Group & Having</a>
+    <a href="#limit">Limit & Pagination</a>
+    <a href="#transactions">Transactions</a>
+    <a href="#utilities">Utilities</a>
+    <h3>Links</h3>
+    <a href="router.html">Router Class &raquo;</a>
+    <a href="helper.html">Helpers Functions &raquo;</a>
+</div>
+
+<div class="content">
+
+<h1>Database Class</h1>
+<p class="lead">
+The LavaLite Database class is a fluent PDO-based query builder from LavaLust
+It provides secure, prepared-statement-based query construction with method chaining.
+</p>
+
+<section id="intro">
+<h2>Introduction</h2>
+
+<p>
+The Database class wraps PDO and provides:
+</p>
+
+<ul>
+<li>Fluent Query Builder</li>
+<li>Prepared Statements (SQL Injection Safe)</li>
+<li>Multi-driver support (MySQL, PostgreSQL, SQLite, SQL Server)</li>
+<li>Transactions with savepoints</li>
+<li>Bulk operations</li>
+</ul>
+
+<div class="note">
+All queries use parameter binding automatically for security.
+</div>
+</section>
+
+<section id="connection">
+<h2>Database Connection</h2>
+
+<p>
+Connection is automatically created using constants:
+</p>
+
+<pre><code class="language-php">
+DB_DRIVER
+DB_HOST
+DB_PORT
+DB_NAME
+DB_USERNAME
+DB_PASSWORD
+DB_PREFIX
+</code></pre>
+
+<p>
+Create instance:
+</p>
+
+<pre><code class="language-php">
+db() = Database::instance();
+</code></pre>
+</section>
+
+<section id="select">
+<h2>Selecting Data</h2>
+
+<h3>Basic Select</h3>
+
+<pre><code class="language-php">
+$user = db()->table('users')
+           ->select('id, name, email')
+           ->where('id', 1)
+           ->get();
+</code></pre>
+
+<p>
+Returns a single row.
+</p>
+
+<h3>Get All Rows</h3>
+
+<pre><code class="language-php">
+$users = db()->table('users')
+            ->select('*')
+            ->get_all();
+</code></pre>
+
+<h3>Aggregate Functions</h3>
+
+<pre><code class="language-php">
+$count = db()->table('users')
+            ->select_count('id', 'total_users')
+            ->get();
+</code></pre>
+
+Supported:
+
+- select_max()
+- select_min()
+- select_sum()
+- select_avg()
+- select_count()
+- select_distinct()
+
+</section>
+
+<section id="where">
+<h2>Where Clauses</h2>
+
+<h3>Basic Where</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->where('status', 'active')
+   ->get_all();
+</code></pre>
+
+<h3>Operators</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->where('age', '>', 18)
+   ->get_all();
+</code></pre>
+
+<h3>Multiple Conditions</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->where('status', 'active')
+   ->or_where('role', 'admin')
+   ->get_all();
+</code></pre>
+
+<h3>LIKE</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->like('name', '%john%')
+   ->get_all();
+</code></pre>
+
+<h3>IN Clause</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->in('id', [1,2,3])
+   ->get_all();
+</code></pre>
+
+<h3>BETWEEN</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->between('age', 18, 30)
+   ->get_all();
+</code></pre>
+
+</section>
+
+<section id="insert">
+<h2>Insert</h2>
+
+<h3>Single Insert</h3>
+
+<pre><code class="language-php">
+$id = db()->table('users')
+         ->insert([
+             'name' => 'John',
+             'email' => 'john@example.com'
+         ]);
+</code></pre>
+
+<h3>Bulk Insert</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->bulk_insert([
+       ['name'=>'A','email'=>'a@mail.com'],
+       ['name'=>'B','email'=>'b@mail.com']
+   ]);
+</code></pre>
+
+</section>
+
+<section id="update">
+<h2>Update</h2>
+
+<h3>Basic Update</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->where('id', 1)
+   ->update([
+       'name' => 'Updated Name'
+   ]);
+</code></pre>
+
+<h3>Increment / Decrement</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->where('id', 1)
+   ->increment('login_count');
+
+db()->table('users')
+   ->where('id', 1)
+   ->decrement('credits', 5);
+</code></pre>
+
+</section>
+
+<section id="delete">
+<h2>Delete</h2>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->where('id', 5)
+   ->delete();
+</code></pre>
+
+</section>
+
+<section id="joins">
+<h2>Joins</h2>
+
+<pre><code class="language-php">
+$orders = db()->table('orders')
+             ->select('orders.id, users.name')
+             ->inner_join('users', 'users.id = orders.user_id')
+             ->get_all();
+</code></pre>
+
+Supported joins:
+
+- inner_join()
+- left_join()
+- right_join()
+- full_outer_join()
+
+</section>
+
+<section id="group">
+<h2>Group By & Having</h2>
+
+<pre><code class="language-php">
+db()->table('orders')
+   ->select('user_id, COUNT(id) as total')
+   ->group_by('user_id')
+   ->having('total', '>', 5)
+   ->get_all();
+</code></pre>
+
+</section>
+
+<section id="limit">
+<h2>Limit & Pagination</h2>
+
+<h3>Limit</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->limit(10)
+   ->get_all();
+</code></pre>
+
+<h3>Pagination</h3>
+
+<pre><code class="language-php">
+db()->table('users')
+   ->pagination(10, 2)
+   ->get_all();
+</code></pre>
+
+</section>
+
+<section id="transactions">
+<h2>Transactions</h2>
+
+<pre><code class="language-php">
+db()->transaction();
+
+try {
+
+    db()->table('users')->insert([...]);
+    db()->table('logs')->insert([...]);
+
+    db()->commit();
+
+} catch(Exception $e) {
+
+    db()->roll_back();
+}
+</code></pre>
+
+<div class="tip">
+Nested transactions are supported using savepoints.
+</div>
+
+</section>
+
+<section id="utilities">
+<h2>Utility Methods</h2>
+
+<h3>Get SQL</h3>
+
+<pre><code class="language-php">
+echo db()->get_sql();
+</code></pre>
+
+<h3>Row Count</h3>
+
+<pre><code class="language-php">
+echo db()->row_count();
+</code></pre>
+
+<h3>Raw Query</h3>
+
+<pre><code class="language-php">
+$stmt = db()->raw("SELECT * FROM users WHERE id = ?", [1]);
+$result = $stmt->fetch();
+</code></pre>
+
+</section>
+
+</div>
+</body>
+</html>

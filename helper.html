@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LavaLite Helper Functions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Highlight.js -->
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+<style>
+:root {
+    --orange: #f97316;
+    --orange-dark: #ea580c;
+    --sidebar-bg: #111827;
+    --border: #e5e7eb;
+    --text: #1f2937;
+    --muted: #6b7280;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    display:flex;
+    background:#fff;
+    color:var(--text);
+}
+
+/* Sidebar */
+.sidebar {
+    width:280px;
+    background:var(--sidebar-bg);
+    color:#fff;
+    padding:30px 20px;
+    position:fixed;
+    height:100%;
+    overflow-y:auto;
+}
+
+.sidebar h2 {
+    color:var(--orange);
+    margin-bottom:25px;
+}
+
+.sidebar a {
+    display:block;
+    color:#d1d5db;
+    text-decoration:none;
+    padding:6px 0;
+    font-size:14px;
+    transition:0.2s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    color:var(--orange);
+    padding-left:6px;
+}
+
+/* Content */
+.content {
+    margin-left:280px;
+    padding:60px;
+    max-width:1100px;
+}
+
+h1 { font-size:32px; margin-bottom:10px; }
+.lead { color:var(--muted); margin-bottom:40px; }
+
+h2 {
+    margin-top:60px;
+    margin-bottom:15px;
+    border-bottom:2px solid var(--border);
+    padding-bottom:8px;
+    color:var(--orange-dark);
+}
+
+h3 { margin-top:30px; margin-bottom:10px; }
+
+pre { border-radius:8px; margin:20px 0; }
+
+.note {
+    background:#fff7ed;
+    border-left:4px solid var(--orange);
+    padding:15px;
+    margin:15px 0;
+}
+
+.tip {
+    background:#ecfdf5;
+    border-left:4px solid #10b981;
+    padding:15px;
+    margin:15px 0;
+}
+
+@media (max-width:900px){
+    .sidebar{ position:relative; width:100%; height:auto; }
+    .content{ margin-left:0; padding:30px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Helpers</h2>
+    <a href="#base_url">base_url()</a>
+    <a href="#url">url()</a>
+    <a href="#csrf_field">csrf_field()</a>
+    <a href="#set_flash">set_flash()</a>
+    <a href="#get_flash">get_flash()</a>
+    <a href="#json_response">json_response()</a>
+    <a href="#db">db()</a>
+    <h3>Links</h3>
+    <a href="router.html">Router Class &raquo;</a>
+    <a href="database.html">Database Class &raquo;</a>
+</div>
+
+<div class="content">
+
+<h1>Global Helper Functions</h1>
+<p class="lead">
+LavaLite provides a set of global helper functions to simplify common tasks such as URL generation, CSRF protection, flash messages, JSON responses, and database access.
+</p>
+
+<section id="base_url">
+<h2>base_url()</h2>
+
+<p>Get the base URL of your application dynamically.</p>
+
+<pre><code class="language-php">
+&lt;?= base_url(); ?&gt;
+// Output: http://localhost:3000
+</code></pre>
+
+<div class="note">
+Automatically detects protocol (http/https) and script directory.
+</div>
+</section>
+
+<section id="url">
+<h2>url(string $path = '')</h2>
+
+<p>Generate a full URL based on the base URL with an optional path.</p>
+
+<pre><code class="language-php">
+&lt;?= url('login'); ?&gt;
+// Output: http://localhost:3000/login
+</code></pre>
+</section>
+
+<section id="csrf_field">
+<h2>csrf_field()</h2>
+
+<p>Generate a CSRF hidden input field for forms.</p>
+
+<pre><code class="language-php">
+&lt;form method="post"&gt;
+    &lt;?= csrf_field(); ?&gt;
+    &lt;input type="text" name="name"&gt;
+&lt;/form&gt;
+</code></pre>
+
+<div class="note">
+Requires the <code>Router</code> class instance to generate the CSRF token.
+</div>
+</section>
+
+<section id="set_flash">
+<h2>set_flash(string $key, string $message)</h2>
+
+<p>Set a temporary flash message in the session.</p>
+
+<pre><code class="language-php">
+set_flash('success', 'Profile updated successfully');
+</code></pre>
+
+<div class="tip">
+Flash messages are removed automatically when retrieved with <code>get_flash()</code>.
+</div>
+</section>
+
+<section id="get_flash">
+<h2>get_flash(string $key)</h2>
+
+<p>Retrieve and remove a flash message from the session.</p>
+
+<pre><code class="language-php">
+&lt;?php if($msg = get_flash('success')): ?&gt;
+    &lt;div class="alert"&gt;&lt;?= $msg; ?&gt;&lt;/div&gt;
+&lt;?php endif; ?&gt;
+</code></pre>
+</section>
+
+<section id="json_response">
+<h2>json_response($data, int $status = 200)</h2>
+
+<p>Return a JSON response and terminate script execution.</p>
+
+<pre><code class="language-php">
+json_response(['success' =&gt; true, 'message' =&gt; 'OK'], 200);
+</code></pre>
+
+<div class="note">
+Automatically sets HTTP status code and <code>Content-Type: application/json</code>.
+</div>
+</section>
+
+<section id="db">
+<h2>db()</h2>
+
+<p>Get a new Database instance.</p>
+
+<pre><code class="language-php">
+$users = db()->table('users')->get_all();
+</code></pre>
+
+<div class="tip">
+This is a shortcut for creating a <code>Database</code> instance.
+</div>
+</section>
+
+</div>
+</body>
+</html>
