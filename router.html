@@ -180,13 +180,13 @@ GET routes are used to retrieve data or display pages.
 They should never modify server state.
 </p>
 
-<pre><code class="language-php">$router->get('/', 'views/home');
+<pre><code class="language-php">$router->get('/', 'app/views/home');
 
 $router->get('users/{id}', function($id){
     echo "User ID: " . $id;
 });
 
-$router->get('posts/{slug?}', 'posts/show');</code></pre>
+$router->get('posts/{slug?}', 'app/posts/show');</code></pre>
 
 <h3>Route Parameters</h3>
 
